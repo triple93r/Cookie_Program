@@ -1,0 +1,62 @@
+<script>
+        // Check for existing "rememberMe" cookie and populate the form
+        window.onload = function () {
+            var rememberMe = getCookie("rememberMe");
+            if (rememberMe === "true") {
+                document.getElementById("rememberMe").checked = true;
+                document.getElementById("username").value = getCookie("username");
+            }
+        };
+ 
+        function login() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            var rememberMe = document.getElementById("rememberMe").checked;
+ 
+            // Perform server-side validation and authentication (not shown in this example).
+            // Assume a hypothetical function called "performLogin" on the server.
+ 
+            if (performLogin(username, password)) {
+                // Set cookies based on the "Remember Me" checkbox
+                if (rememberMe) {
+                    setCookie("username", username, 30); // Cookie expires in 30 days
+                    setCookie("rememberMe", true, 30);
+                } else {
+                    // Clear the cookies if "Remember Me" is not checked
+                    deleteCookie("username");
+                    deleteCookie("rememberMe");
+                }
+ 
+                // Redirect to the main page or perform other actions after login.
+                window.location.href = "main_page.html";
+            } else {
+                alert("Invalid username or password");
+            }
+        }
+ 
+        // Function to set a cookie
+        function setCookie(name, value, days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + value + expires + "; path=/";
+        }
+ 
+        // Function to get the value of a cookie
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i];
+                while (cookie.charAt(0) === ' ') {
+                    cookie = cookie.substring(1, cookie.length);
+                }
+                if (cookie.indexOf(nameEQ) === 0) {
+                    return cookie.substring(nameEQ.length, cookie.length);
+                }
+            }
+            return null;
+        }
